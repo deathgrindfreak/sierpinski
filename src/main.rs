@@ -18,14 +18,15 @@ struct Args {
     n: i32,
 
     #[clap(long)]
-    video: bool,
+    animate: bool,
 }
 
 fn main() {
     let args = Args::parse();
-    let mut sierpinski = Sierpinski::new(600, args.n, args.video);
+    let mut sierpinski = Sierpinski::new(600, args.n, args.animate);
     sierpinski.iterate();
-    if !args.video {
+
+    if !args.animate {
         sierpinski.print_image();
     }
 }
@@ -36,11 +37,11 @@ struct Sierpinski {
     n: i32,
     corners: Vec<Vec2D>,
 
-    video: bool,
+    animate: bool,
 }
 
 impl Sierpinski {
-    pub fn new (side: i32, n: i32, video: bool) -> Self {
+    pub fn new (side: i32, n: i32, animate: bool) -> Self {
         let mut image = PPM::new(side, side, WHITE);
 
         let h = side - SPACING * 2;
@@ -60,7 +61,7 @@ impl Sierpinski {
             rnd: thread_rng(),
             n,
             corners,
-            video,
+            animate,
         }
     }
 
@@ -73,7 +74,7 @@ impl Sierpinski {
             v = corner.midpoint(&v);
             self.image.set(&v, BLACK);
 
-            if self.video {
+            if self.animate {
                 self.print_image();
             }
         }

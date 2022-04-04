@@ -17,6 +17,6 @@ cargo run -- -n <number_of_iterations> > out.ppm
 To generate a video, I use `ffmpeg`
 
 ``` sh
-cargo run -- -n <number_of_iterations> --video \
+cargo run -- -n <number_of_iterations> --animate \
   | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - output.mp4
 ```
