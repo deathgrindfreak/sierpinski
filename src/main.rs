@@ -1,6 +1,8 @@
 extern crate sierpinski;
 extern crate rand;
+extern crate clap;
 
+use clap::Parser;
 use rand::prelude::SliceRandom;
 use rand::{Rng, thread_rng};
 use rand::rngs::ThreadRng;
@@ -10,10 +12,22 @@ const SPACING: i32 = 10;
 const WHITE: Color = (255, 255, 255);
 const BLACK: Color = (0, 0, 0);
 
+#[derive(Parser, Debug)]
+struct Args {
+    #[clap(short, default_value_t = 10000)]
+    n: i32,
+
+    #[clap(long)]
+    video: bool,
+}
+
 fn main() {
-    let mut sierpinski = Sierpinski::new(600, 20000);
+    let args = Args::parse();
+    let mut sierpinski = Sierpinski::new(600, args.n, args.video);
     sierpinski.iterate();
-    sierpinski.print_image();
+    if !args.video {
+        sierpinski.print_image();
+    }
 }
 
 struct Sierpinski {
@@ -21,10 +35,12 @@ struct Sierpinski {
     rnd: ThreadRng,
     n: i32,
     corners: Vec<Vec2D>,
+
+    video: bool,
 }
 
 impl Sierpinski {
-    pub fn new (side: i32, n: i32) -> Self {
+    pub fn new (side: i32, n: i32, video: bool) -> Self {
         let mut image = PPM::new(side, side, WHITE);
 
         let h = side - SPACING * 2;
@@ -44,6 +60,7 @@ impl Sierpinski {
             rnd: thread_rng(),
             n,
             corners,
+            video,
         }
     }
 
@@ -55,6 +72,10 @@ impl Sierpinski {
             let corner = self.random_corner();
             v = corner.midpoint(&v);
             self.image.set(&v, BLACK);
+
+            if self.video {
+                self.print_image();
+            }
         }
     }
 
