@@ -20,3 +20,5 @@ To generate a video, I use `ffmpeg`
 cargo run -- -n <number_of_iterations> --animate \
   | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - output.mp4
 ```
+
+![triangle](sierpinski.gif)
